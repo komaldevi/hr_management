@@ -1,0 +1,93 @@
+<div class="col-lg-12">
+  <%= flash[:notice] %>
+  <div class='card rounded-0 mt-5 mb-5'>
+    <div class="card-body">
+      <h2 class="text-center">Listing Employees</h2>
+    </div>
+  </div>
+
+  <%= link_to "Create New Employee", new_employee_path, class: "btn btn-primary btn-lg mb-4 rounded-0" %>
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+     View List In
+    </button>
+    <ul class="dropdown-menu">
+      <li><%= link_to "Table", employees_path(view_type: 'table'), class: "dropdown-item" %></li>
+       <li><%= link_to "Accordian", employees_path(view_type: 'accordian'), class: "dropdown-item" %></li>
+    </ul>
+  </div>
+
+  <% if params[:view_type] !='accordian' %>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th> Name</th>
+          <th>Email</th>
+          <th>Address</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @employees.each do |employee| %>
+          <tr>
+            <td><%= employee.name %></td>
+            <td><%= employee.personal_email%></td>
+            <td><%= employee.full_address%><td>
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Actions
+              </button>
+              <ul class="dropdown-menu">
+                <li><%= link_to "Edit", edit_employee_path(employee), class: "dropdown-item" %></li>
+                <li><%= link_to "View", employee_path(employee), class: "dropdown-item" %></li>
+                <li><%= link_to "Delete",employee_path(employee), class: "dropdown-item" , method: :delete, data: {confirm: 'Are you sure to delete this employee?'} %></li>
+              </ul>
+            </div>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+
+  <% if params[:view_type].present? && params[:view_type] =='accordian' %>
+    <div class="accordion" id="accordionExample">
+      <% @employees.each do |employee|%>
+      <div class="accordion-item">
+        <h2 class="accordion-header" >
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<%= employee.id %>" aria-expanded="true" aria-controls="collapse-<%= employee.id %>">
+            <%= employee.name_with_email %>
+          </button>
+        </h2>
+        <div id="collapse-<%= employee.id %>" class="accordion-collapse collapse " data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+
+            <h2 class="text-center">Employee Details</h2>
+          <div class="row mt-5">
+            <div class="col-lg-6">
+              <h3 class="mb-3">Personal Information</h3>
+              <p class="lead"><strong>First Name:</strong><%= employee.first_name %></p>
+
+              <p class="lead"><strong>Last Name:</strong><%= employee.last_name %></p>
+              <p class="lead"><strong>Personal Email:</strong><%= employee.personal_email %></p>
+
+            </div>
+            <div class="col-lg-6">
+              <h3 class="mb-3">Address Information</h3>
+              <p class="lead"><strong>Address line 1:</strong><%= employee.address_line_1 %></p>
+              <p class="lead"><strong>City:</strong><%= employee.city %></p>
+              <p class="lead"><strong>State:</strong><%= employee.state %></p>
+              <p class="lead"><strong>Country:</strong><%= employee.country %></p>
+              <p class="lead"><strong>Pincode:</strong><%= employee.pincode %></p>
+            </div>
+            <div class="col-lg-12">
+            <%= link_to "Edit", edit_employee_path(employee), class: "btn btn-primary" %>
+            <%= link_to "Delete",employee_path(employee), class: "btn btn-danger" , method: :delete, data: {confirm: 'Are you sure to delete this employee?'} %>
+          </div>
+          </div>
+        </div>
+      </div>
+     <% end %>
+    </div>
+  <% end %>
+</div>
